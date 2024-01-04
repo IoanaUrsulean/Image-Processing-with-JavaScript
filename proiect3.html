@@ -14,41 +14,35 @@
         <canvas id="myCanvas" width="400" height="400" style="border:1px solid #000;"></canvas>
         
         <script>
-            function getFile() // Functia preia JSON-ul si afiseaza in browser imaginea
+            async function getDogImage() // Functia preia JSON-ul 
             {
-                let req = new XMLHttpRequest();
-                req.open('GET', "https://dog.ceo/api/breeds/image/random");
-
-                req.onload = function () 
+                try 
                 {
-                    if (req.status == 200) 
-                    {
-                        const response = JSON.parse(req.responseText);
-                        console.log(response.message);
-                        
-                        // Procesare si afisare imagine in canvas
-                        const canvas = document.getElementById('myCanvas');
-                        const ctx = canvas.getContext('2d');
-                        const image = new Image();
-
-                        image.src = response.message; // Atribuie URL
-
-                        image.onload = function() 
-                        {
-                            ctx.drawImage(image, 0, 0, canvas.width, canvas.height); // Deseneaza imaginea pe canvas
-                        };
-                    } else {
-                        console.error("Image didn't load correctly. Status:", req.status);
-                    }
-                };
-
-                req.send();
+                    const response = await fetch('https://dog.ceo/api/breeds/image/random');
+                    const data = await response.json();
+                    return data;
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
             }
-            
-            // Apel la incarcare pagina
-            window.onload = function() {
-                getFile();
-            };
+    
+            async function processImage() //functia afiseaza in browser imaginea folosind canvas
+            {
+                const dogData = await getDogImage();
+                const canvas = document.getElementById('myCanvas');
+                const ctx = canvas.getContext('2d');
+                const image = new Image();
+    
+                image.src = dogData.message;
+    
+                image.onload = function() {
+                    // Desenare imagine pe canvas
+                    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+                };
+            }
+    
+            // Apelare functie de procesare
+            processImage();
         </script>
     </div>
 </body>
