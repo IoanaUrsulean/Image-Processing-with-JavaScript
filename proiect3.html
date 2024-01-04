@@ -36,11 +36,48 @@
                 image.src = dogData.message;
     
                 image.onload = function() {
-                    // Desenare imagine pe canvas
-                    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+                    // Deseneaza imagine pe canvas
+                    //ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+                    const laplacianData = applyLaplacianFilter(imageData.data, canvas.width, canvas.height);
+
+                    // Afiseaza imaginea filtrata pe canvas
+                    ctx.putImageData(new ImageData(laplacianData, canvas.width, canvas.height), 0, 0);
                 };
             }
-    
+
+            //Tema de procesare - 28.Laplacian Operator (Positive/Negative)
+            function applyLaplacianFilter(imageData, width, height) 
+            {
+                const laplacianMatrix = [
+                    [0, 1, 0],
+                    [1, -4, 1],
+                    [0, 1, 0]
+                ];
+
+                const filteredImageData = new Uint8ClampedArray(imageData.length);
+
+                for (let y = 1; y < height - 1; y++) {
+                    for (let x = 1; x < width - 1; x++) {
+                        for (let c = 0; c < 3; c++) { 
+                            let sum = 0;
+                            for (let i = 0; i < 3; i++) {
+                                for (let j = 0; j < 3; j++) {
+                                    const pixelIndex = ((y + i - 1) * width + (x + j - 1)) * 4 + c; 
+                                    const pixelValue = imageData[pixelIndex];
+                                    sum += pixelValue * laplacianMatrix[i][j];
+                                }
+                            }
+
+                            const index = (y * width + x) * 4 + c;
+                            const newValue = sum < 0 ? 0 : (sum > 255 ? 255 : sum);
+                            filteredImageData[index] = newValue;
+                        }
+                    }
+                }
+
+                return filteredImageData;
+            }
             // Apelare functie de procesare
             processImage();
         </script>
