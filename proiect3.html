@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="proiect3.css">
+    <title>TW</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Proiect 3 - TW</h1>
+        <h2>Aplicatie JavaScript care sa realizeze o procesare de imagini</h2>
+        
+        <canvas id="myCanvas" width="400" height="400" style="border:1px solid #000;"></canvas>
+        
+        <script>
+            function getFile() // Functia preia JSON-ul si afiseaza in browser imaginea
+            {
+                let req = new XMLHttpRequest();
+                req.open('GET', "https://dog.ceo/api/breeds/image/random");
+
+                req.onload = function () 
+                {
+                    if (req.status == 200) 
+                    {
+                        const response = JSON.parse(req.responseText);
+                        console.log(response.message);
+                        
+                        // Procesare si afisare imagine in canvas
+                        const canvas = document.getElementById('myCanvas');
+                        const ctx = canvas.getContext('2d');
+                        const image = new Image();
+
+                        image.src = response.message; // Atribuie URL
+
+                        image.onload = function() 
+                        {
+                            ctx.drawImage(image, 0, 0, canvas.width, canvas.height); // Deseneaza imaginea pe canvas
+                        };
+                    } else {
+                        console.error("Image didn't load correctly. Status:", req.status);
+                    }
+                };
+
+                req.send();
+            }
+            
+            // Apel la incarcare pagina
+            window.onload = function() {
+                getFile();
+            };
+        </script>
+    </div>
+</body>
+</html>
