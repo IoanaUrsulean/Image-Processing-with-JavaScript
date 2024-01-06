@@ -1,5 +1,5 @@
 html,body {
-    height: 100%;
+    height: auto;
 	margin: 0;
 }
 .container {
@@ -8,9 +8,15 @@ html,body {
     text-align: center;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     height: 100%;
+    
+}
+.inner{ 
+    text-align: left;
+    padding: 10%;
 }
 h1 {
     text-shadow: 2px 2px #7a777788;
-   margin-top: 0;
-   padding-top: 20px; 
+    margin-top: 0;
+    padding-top: 20px; 
+    text-align: center;
 }

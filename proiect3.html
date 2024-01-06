@@ -126,6 +126,21 @@
             // Apelare functie de procesare
             processImage();
         </script>
+
+        <div class="inner">
+            <h2>Descrierea aplicatiei</h2>
+            <p>Acest script JavaScript utilizează API-ul https://dog.ceo/api/breeds/image/random pentru a obține o imagine aleatorie cu câini și o afișează pe un element canvas într-un document HTML. După afișarea imaginii, scriptul aplică un filtru Laplacian în patru etape succesive și afișează rezultatele filtrării pe canvas, cu o întârziere de 1 secundă între fiecare etapă.</p>
+            <ul>
+                <li><p>Funcția getDogImage: Această funcție face o cerere asincronă către API-ul menționat pentru a obține un URL pentru o imagine aleatoare cu câini. Funcția returnează obiectul JSON rezultat din cerere.</p></li>
+                <li>Funcția processImage: După ce imaginea este obținută, funcția afișează imaginea originală pe canvas. După o întârziere de 2 secunde (setTimeout(function() { ... }, 2000)), începe prelucrarea imaginii. Aplică un filtru Laplacian în patru etape, fiecare etapă având o întârziere de 1 secundă între ele. Pentru fiecare etapă, imaginea filtrată este afișată pe canvas.</li>
+                <li><p>Funcția JavaScript 'applyLaplacianFilter' este creată pentru a aplica un filtru Laplacian unei imagini reprezentate prin datele sale pixel. Filtrul Laplacian este un tip de filtru utilizat în mod obișnuit pentru detectarea marginilor în prelucrarea imaginilor.</p>
+                    <p>Această funcție efectuează o operație de convoluție cu kernelul Laplacian asupra datelor pixel din imagine și produce un rezultat filtrat. Limita de lățime (stopWidth) este introdusă pentru a evita procesarea întregii imagini, ceea ce ar putea duce la apariția unor artefacte la margine. Funcția returnează datele pixel filtrate.</p></li>
+            </ul>
+            <h2>Parte teoretica</h2>
+            <p>Operartorul Laplacian este un operator diferential; Utilizările sale evidențiază discontinuitățile nivelului de gri dintr-o imagine și încearcă să sublinieze regiunile cu niveluri de gri care variază lent. Această operație produce astfel de imagini care au linii de margine cenușii și alte discontinuități pe un fundal întunecat. Aceasta produce muchii interioare și exterioare într-o imagine</p>
+            <p>În Operatorul Laplacian pozitiv avem matricea standard în care elementul central al măștii trebuie să fie negativ, iar elementele de colț ale măștii trebuie să fie zero. Acesta este utilizat pentru a scoate marginile exterioare dintr-o imagine.</p>
+        </div>
+        
     </div>
 </body>
 </html>
