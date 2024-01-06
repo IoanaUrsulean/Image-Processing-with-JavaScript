@@ -14,7 +14,7 @@
         <canvas id="myCanvas" width="400" height="400" style="border:1px solid #000;"></canvas>
         
         <script>
-            async function getDogImage() // Functia preia JSON-ul 
+            async function getDogImage() // Functia care preia JSON-ul 
             {
                 try 
                 {
@@ -39,36 +39,54 @@
                 image.onload = function() 
                 {
                     
-                    // Deseneaza imagine pe canvas
+                    // Deseneaza imaginea originala pe canvas
                     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-                    setTimeout(function() 
+                    setTimeout(function() //Incepe prelucrarea dupa un timp stabilit de 2 secunde
                     {
                         let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                        const laplacianData = applyLaplacianFilter(imageData.data, canvas.width, canvas.height);
 
-                        // Afiseaza imaginea filtrata pe canvas
-                        ctx.putImageData(new ImageData(laplacianData, canvas.width, canvas.height), 0, 0);
-                    }, 2000); // Intarziere de 2 secunde
+                        for( let n = 1; n <= 4; n++) //Imparte prelucrarea in 4 pasi
+                        {
+                            setTimeout(function() //Fiecare pas se va realiza dupa un timp de o secunda
+                            {
+                                //Aplica filtrul
+                                const laplacianData = applyLaplacianFilter(imageData.data, canvas.width, canvas.height, n);
+                                // Afiseaza imaginea filtrata pe canvas
+                                ctx.putImageData(new ImageData(laplacianData, canvas.width, canvas.height), 0, 0);
+                            }, n*1000); 
+                        }
+                    }, 2000); 
                 };
             }
 
             //Tema de procesare - 28.Laplacian Operator (Positive/Negative)
-            function applyLaplacianFilter(imageData, width, height) 
+            function applyLaplacianFilter(imageData, width, height, n) 
             {
+                // Matricea Laplaciană pentru convoluție
                 const laplacianMatrix = [
                     [0, 1, 0],
                     [1, -4, 1],
                     [0, 1, 0]
                 ];
 
+                // Array-ul de date pixel pentru rezultat cu aceeași lungime ca și intrarea
                 const output = new Uint8ClampedArray(imageData.length);
+
+                // Jumătatea dimensiunii kernelului Laplacian (folosită pentru indexare)
                 const halfKernel = Math.floor(laplacianMatrix.length / 2);
 
+                // Limitează lățimea procesării pentru a evita artefactele la margine
+                const stopWidth = Math.floor(width / 4 * n);
+
+                // Parcurge fiecare pixel în imagine
                 for (let y = 0; y < height; y++) 
                 {
-                    for (let x = 0; x < width; x++) 
+                    // Procesează pixelii până la limita specificată de lățime
+                    for (let x = 0; x < stopWidth; x++) 
                     {
                         let r = 0, g = 0, b = 0;
+
+                        // Convoluție: aplică kernelul Laplacian
                         for (let ky = -halfKernel; ky <= halfKernel; ky++) 
                         {
                             for (let kx = -halfKernel; kx <= halfKernel; kx++) 
@@ -82,14 +100,27 @@
                                 b += imageData[pos + 2] * weight;
                             }
                         }
+
+                        // Setează valorile pixelului filtrat în array-ul de ieșire
                         const pos = (y * width + x) * 4;
                         output[pos] = r;
                         output[pos + 1] = g;
                         output[pos + 2] = b;
-                        output[pos + 3] = imageData[pos + 3]; // preserve alpha channel
+                        output[pos + 3] = imageData[pos + 3];
+                    }
+
+                    // Copiază pixelii rămași dincolo de lățimea specificată
+                    for (let x = stopWidth; x < width; x++) 
+                    {
+                        const pos = (y * width + x) * 4;
+                        output[pos] = imageData[pos];
+                        output[pos + 1] = imageData[pos + 1];
+                        output[pos + 2] = imageData[pos + 2];
+                        output[pos + 3] = imageData[pos + 3];
                     }
                 }
 
+                // Returnează datele pixel filtrate
                 return output;
             }
             // Apelare functie de procesare
