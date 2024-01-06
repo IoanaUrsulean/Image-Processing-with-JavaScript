@@ -36,16 +36,19 @@
                 image.crossOrigin = "Anonymous";
                 image.src = dogData.message;
     
-                image.onload = function() {
+                image.onload = function() 
+                {
+                    
                     // Deseneaza imagine pe canvas
-                    ;
                     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+                    setTimeout(function() 
+                    {
+                        let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        const laplacianData = applyLaplacianFilter(imageData.data, canvas.width, canvas.height);
 
-                    let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                    const laplacianData = applyLaplacianFilter(imageData.data, canvas.width, canvas.height);
-
-                    // Afiseaza imaginea filtrata pe canvas
-                    ctx.putImageData(new ImageData(laplacianData, canvas.width, canvas.height), 0, 0);
+                        // Afiseaza imaginea filtrata pe canvas
+                        ctx.putImageData(new ImageData(laplacianData, canvas.width, canvas.height), 0, 0);
+                    }, 2000); // Intarziere de 2 secunde
                 };
             }
 
